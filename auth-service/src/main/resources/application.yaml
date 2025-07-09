@@ -38,7 +38,7 @@ com:
       secret-key: ${JWT_SECRET_KEY}
       issuer: ${JWT_ISSUER}
       audience: ${JWT_AUDIENCE}
-      expiration: 3600000
+      expirationTime: 3600000
 logging:
   level:
     com.llmreview.auth: DEBUG
