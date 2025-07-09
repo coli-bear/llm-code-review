@@ -2,6 +2,7 @@ package com.llmreview.auth.config;
 
 import com.llmreview.auth.controller.GithubOAuth2LoginSuccessHandler;
 import com.llmreview.auth.user.service.GithubOAuth2UserService;
+import lombok.RequiredArgsConstructor;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -11,15 +12,11 @@ import org.springframework.security.web.SecurityFilterChain;
 
 @Configuration
 @EnableWebSecurity
+@RequiredArgsConstructor
 public class SecurityConfig {
 
     private final GithubOAuth2UserService githubOAuth2UserService;
     private final GithubOAuth2LoginSuccessHandler githubOAuth2LoginSuccessHandler;
-
-    public SecurityConfig(GithubOAuth2UserService githubOAuth2UserService, GithubOAuth2LoginSuccessHandler githubOAuth2LoginSuccessHandler) {
-        this.githubOAuth2UserService = githubOAuth2UserService;
-        this.githubOAuth2LoginSuccessHandler = githubOAuth2LoginSuccessHandler;
-    }
 
     @Bean
     protected SecurityFilterChain config(HttpSecurity http) throws Exception {

@@ -7,8 +7,17 @@ import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
 import jakarta.persistence.Table;
+import lombok.AccessLevel;
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Getter;
+import lombok.NoArgsConstructor;
 
 @Entity
+@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@AllArgsConstructor(access =  AccessLevel.PROTECTED)
+@Getter
+@Builder
 @Table(name = "users")
 public class UserEntity {
     @Id
@@ -21,16 +30,6 @@ public class UserEntity {
 
     @Enumerated(EnumType.STRING)
     private PlanType plan;
-
-    protected UserEntity() {
-    }
-
-    public UserEntity(String githubId, String username, String email, PlanType plan) {
-        this.githubId = githubId;
-        this.username = username;
-        this.email = email;
-        this.plan = plan;
-    }
 
     public enum PlanType {
         FREE, STANDARD, PRO
