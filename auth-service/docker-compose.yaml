@@ -1,0 +1,11 @@
+services:
+  auth-db:
+    image: mariadb:latest
+    container_name: auth-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: auth_db
+      MYSQL_USER: authuser
+      MYSQL_PASSWORD: qwe123!@4
+    ports:
+      - "3306:3306"
