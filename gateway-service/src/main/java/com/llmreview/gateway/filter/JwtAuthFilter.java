@@ -21,6 +21,7 @@ import reactor.core.publisher.Mono;
 public class JwtAuthFilter implements GlobalFilter, Ordered {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
+    private static final String USER_ROLE = "USER"; // 사용자 역할 상수
     private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
@@ -53,6 +54,15 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }
+        String role = jwtUtil.extractRole(token);
+        log.debug("Extracted role: {}", role);
+
+        if (!USER_ROLE.equals(role)) {
+            log.debug("Unauthorized role: {}", role);
+            exchange.getResponse().setStatusCode(HttpStatus.FORBIDDEN);
+            return exchange.getResponse().setComplete();
+        }
+
         return chain.filter(exchange);
     }
 

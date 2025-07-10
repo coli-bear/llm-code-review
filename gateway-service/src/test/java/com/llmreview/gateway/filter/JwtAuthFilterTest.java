@@ -27,12 +27,21 @@ class JwtAuthFilterTest {
 
     @MockitoBean
     private JwtUtil jwtUtil;
-    private final String validToken = "valid.jwt.token";
+    private final String validUserToken = "valid.user.token";
+    private final String validAdminToken = "valid.admin.token";
     private final String invalidToken = "invalid.jwt.token";
+
+    private static final String USER_ROLE = "USER";
+    private static final String ADMIN_ROLE = "ADMIN";
 
     @BeforeEach
     void setUp() {
-        when(jwtUtil.validateToken(validToken)).thenReturn(true);
+        when(jwtUtil.validateToken(validUserToken)).thenReturn(true);
+        when(jwtUtil.extractRole(validUserToken)).thenReturn(USER_ROLE);
+
+        when(jwtUtil.validateToken(validAdminToken)).thenReturn(true);
+        when(jwtUtil.extractRole(validAdminToken)).thenReturn(ADMIN_ROLE);
+
         when(jwtUtil.validateToken(invalidToken)).thenReturn(false);
     }
 
@@ -67,8 +76,17 @@ class JwtAuthFilterTest {
     void shouldPassWhenTokenIsValid() {
         webTestClient.get()
             .uri("/v1/api/test-connection")
-            .header("Authorization", "Bearer " + validToken)
+            .header("Authorization", "Bearer " + validUserToken)
             .exchange()
             .expectStatus().is5xxServerError();
+    }
+
+    @Test
+    void shouldReturn403WhenRoleIsNotUser() {
+        webTestClient.get()
+            .uri("/v1/api/test-connection")
+            .header("Authorization", "Bearer " + validAdminToken)
+            .exchange()
+            .expectStatus().isForbidden();
     }
 }

@@ -31,7 +31,14 @@ public class UserEntity {
     @Enumerated(EnumType.STRING)
     private PlanType plan;
 
+    @Enumerated(EnumType.STRING)
+    private Role role;
+
     public enum PlanType {
         FREE, STANDARD, PRO
+    }
+
+    public enum Role {
+        USER, ADMIN
     }
 }

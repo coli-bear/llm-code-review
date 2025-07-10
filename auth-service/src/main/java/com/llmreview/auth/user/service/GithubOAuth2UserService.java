@@ -34,10 +34,11 @@ public class GithubOAuth2UserService extends DefaultOAuth2UserService {
                     .username(username)
                     .email(email)
                     .plan(UserEntity.PlanType.FREE) // Default plan type
+                    .role(UserEntity.Role.USER)
                     .build()
             ));
 
-        log.debug("User details: id={}, username={}, email={}", userEntity.getGithubId(), userEntity.getUsername(), userEntity.getEmail());
+        log.debug("User details: id={}, username={}, email={}, role={}", userEntity.getGithubId(), userEntity.getUsername(), userEntity.getEmail(), userEntity.getRole());
 
         return oAuth2User;
     }
