@@ -1,8 +1,8 @@
 package com.llmreview.gateway.filter;
 
+import com.auth0.jwt.exceptions.TokenExpiredException;
 import com.llmreview.gateway.util.JwtUtil;
 import lombok.extern.slf4j.Slf4j;
-import org.springframework.cloud.gateway.filter.GatewayFilter;
 import org.springframework.cloud.gateway.filter.GatewayFilterChain;
 import org.springframework.cloud.gateway.filter.GlobalFilter;
 import org.springframework.core.Ordered;
@@ -22,6 +22,7 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
     private static final String AUTHORIZATION_HEADER = "Authorization";
     private static final String BEARER_PREFIX = "Bearer ";
     private static final String USER_ROLE = "USER"; // 사용자 역할 상수
+    private static final String REISSUE_REQUIRED_HEADER = "X-Reissue-Required";
     private final JwtUtil jwtUtil;
 
     public JwtAuthFilter(JwtUtil jwtUtil) {
@@ -47,10 +48,24 @@ public class JwtAuthFilter implements GlobalFilter, Ordered {
         }
         String token = authorizationHeader.substring(BEARER_PREFIX.length());
         log.debug("Extracted token: {}", token);
-        boolean validated = jwtUtil.validateToken(token);
-        log.debug("Token validation result: {}", validated);
-        if (!validated) {
-            log.debug("Invalid JWT token");
+
+        // 여기서 토큰을 검증
+        try {
+            boolean validated = jwtUtil.validateToken(token);
+            log.debug("Token validation result: {}", validated);
+            if (!validated) {
+                log.debug("Invalid JWT token");
+                exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+                return exchange.getResponse().setComplete();
+            }
+        } catch (TokenExpiredException e) {
+            // 토큰이 만료된 경우 X-Reissue-Required 헤더를 추가하고 401 상태 코드 반환
+            log.debug("JWT token has expired: {}", e.getMessage());
+            exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
+            exchange.getResponse().getHeaders().add(REISSUE_REQUIRED_HEADER, "true");
+            return exchange.getResponse().setComplete();
+        } catch (Exception e) {
+            log.error("Error validating JWT token: {}", e.getMessage());
             exchange.getResponse().setStatusCode(HttpStatus.UNAUTHORIZED);
             return exchange.getResponse().setComplete();
         }

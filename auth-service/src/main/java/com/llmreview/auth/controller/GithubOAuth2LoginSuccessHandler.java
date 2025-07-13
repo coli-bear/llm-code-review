@@ -1,5 +1,6 @@
 package com.llmreview.auth.controller;
 
+import com.llmreview.auth.user.service.RefreshTokenService;
 import com.llmreview.auth.util.JwtUtil;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.http.HttpServletRequest;
@@ -19,6 +20,7 @@ import java.nio.charset.StandardCharsets;
 @RequiredArgsConstructor
 public class GithubOAuth2LoginSuccessHandler implements AuthenticationSuccessHandler {
     private final JwtUtil jwtUtil;
+    private final RefreshTokenService refreshTokenService;
     private static final String FRONTEND_REDIRECT_URL = "http://localhost:3000/oauth-success?token=";
     private static final String ERROR_REDIRECT_URL = "http://localhost:3000/oauth-error";
 
@@ -31,7 +33,8 @@ public class GithubOAuth2LoginSuccessHandler implements AuthenticationSuccessHan
             response.sendRedirect(errorUrl);
         }
         String githubId = String.valueOf(ids);
-        String jwt = jwtUtil.generateToken(githubId);
+        String jwt = jwtUtil.generateToken(githubId, "USER");
+        refreshTokenService.saveRefreshToken(githubId, jwt); // Save the JWT as a refresh token
 
         response.sendRedirect(FRONTEND_REDIRECT_URL + jwt);
     }

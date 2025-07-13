@@ -30,6 +30,10 @@ public class JwtUtil {
             .sign(algorithm);
     }
 
+    public String getSubject(String token) {
+        return JWT.decode(token).getSubject();
+    }
+
     public String validateAndGetSubject(String token) {
         return JWT.require(algorithm)
             .build()
