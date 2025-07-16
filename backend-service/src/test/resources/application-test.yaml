@@ -4,6 +4,19 @@ github:
   token: ${GITHUB_TOKEN}
   forbidden-repo: ${GITHUB_FORBIDDEN_REPO}
 
+
 logging:
   level:
     com.llmreview: DEBUG
+spring:
+  datasource:
+    url: jdbc:h2:mem:testdb
+    username: sa
+    driver-class-name: org.h2.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: create-drop
+    properties:
+      hibernate:
+        format_sql: true
