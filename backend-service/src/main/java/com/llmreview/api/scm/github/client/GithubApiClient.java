@@ -18,10 +18,12 @@ import java.net.http.HttpResponse;
 @Component
 @RequiredArgsConstructor
 public class GithubApiClient {
+    private static final String GITHUB_REPOSITORY_INFORMATION_FORMAT = "https://api.github.com/repos/%s/%s";
+
     private final ObjectMapper objectMapper;
 
     public JsonNode getRepositoryInfo(GithubRepoInfoRequest githubRequest) throws IOException, InterruptedException {
-        String url = String.format("https://api.github.com/repos/%s/%s", githubRequest.owner(), githubRequest.repo());
+        String url = String.format(GITHUB_REPOSITORY_INFORMATION_FORMAT, githubRequest.owner(), githubRequest.repo());
         log.debug("github client request url : {}", url);
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))
             .uri(URI.create(url))
@@ -35,13 +37,12 @@ public class GithubApiClient {
         log.debug("github client response code : {}", response.statusCode());
         if (response.statusCode() == 401) {
             throw new GithubUnauthorized(githubRequest.owner(), githubRequest.repo());
-        } else if (response.statusCode() == 403) {
-            log.debug("Forbidden access to repository {}:{}", githubRequest.owner(), githubRequest.repo());
-            throw new RuntimeException("Access forbidden to the repository. Please check your permissions.");
         } else if (response.statusCode() == 404) {
             throw new GithubNotfoundRepository(githubRequest.owner(), githubRequest.repo());
         }
-        return this.objectMapper.readTree(response.body());
+        String body = response.body();
+        log.debug("github client response body : {}", body);
+        return this.objectMapper.readTree(body);
 
     }
 }
