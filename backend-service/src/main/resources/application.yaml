@@ -1,0 +1,21 @@
+spring:
+  application:
+    name: backend-service
+
+  datasource:
+    url: jdbc:mariadb://localhost:3307/application_db
+    username: application_user
+    password: application_password
+    driver-class-name: org.mariadb.jdbc.Driver
+  jpa:
+    show-sql: true
+    hibernate:
+      ddl-auto: update
+    properties:
+      hibernate:
+        format_sql: true
+
+---
+spring:
+  profiles:
+    active: test

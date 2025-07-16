@@ -1,0 +1,11 @@
+services:
+  application-db:
+    image: mariadb:latest
+    container_name: application-db
+    environment:
+      MYSQL_ROOT_PASSWORD: root_password
+      MYSQL_DATABASE: application_db
+      MYSQL_USER: application_user
+      MYSQL_PASSWORD: application_password
+    ports:
+      - "3307:3306"
