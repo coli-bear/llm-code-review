@@ -1,9 +1,7 @@
 package com.llmreview.api.scm.github.client;
 
-import lombok.ToString;
-
-public record GithubRepoInfoRequest(String owner, String repo, String token) {
-    public GithubRepoInfoRequest {
+public record GithubClientRequestInfo(String owner, String repo, String token) {
+    public GithubClientRequestInfo {
         if (owner == null || owner.isBlank()) {
             throw new IllegalArgumentException("Owner must not be null or blank");
         }

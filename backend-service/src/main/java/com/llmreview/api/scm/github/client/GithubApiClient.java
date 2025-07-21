@@ -22,7 +22,7 @@ public class GithubApiClient {
 
     private final ObjectMapper objectMapper;
 
-    public JsonNode getRepositoryInfo(GithubRepoInfoRequest githubRequest) throws IOException, InterruptedException {
+    public JsonNode request(GithubClientRequestInfo githubRequest) throws IOException, InterruptedException {
         String url = String.format(GITHUB_REPOSITORY_INFORMATION_FORMAT, githubRequest.owner(), githubRequest.repo());
         log.debug("github client request url : {}", url);
         HttpRequest request = HttpRequest.newBuilder(URI.create(url))

@@ -1,10 +1,3 @@
-github:
-  owner: ${GITHUB_OWNER}
-  repo: ${GITHUB_REPO}
-  token: ${GITHUB_TOKEN}
-  forbidden-repo: ${GITHUB_FORBIDDEN_REPO}
-
-
 logging:
   level:
     com.llmreview: DEBUG
