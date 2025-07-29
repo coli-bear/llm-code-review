@@ -26,8 +26,8 @@ import static org.junit.jupiter.api.Assertions.assertNotNull;
 @TestPropertySource(locations = {
     "classpath:application-test.yaml"
 })
-class GithubApiClientTest {
-    private final GithubApiClient githubApiClient = new GithubApiClient(new ObjectMapper());
+class GithubRepoMetaClientTest {
+    private final GithubRepoMetaClient githubRepoMetaClient = new GithubRepoMetaClient(new ObjectMapper());
 
     public static Stream<Arguments> validRequestResourceProvider() {
         Dotenv dotenv = Dotenv.configure().filename(".env.test").load();
@@ -67,7 +67,7 @@ class GithubApiClientTest {
     void testGetRepositoryInfo(GithubClientRequestInfo requestInfo) throws IOException, InterruptedException {
         log.debug("Valid Request Info: {}", requestInfo);
         // When
-        JsonNode repositoryInfo = githubApiClient.request(requestInfo);
+        JsonNode repositoryInfo = githubRepoMetaClient.request(requestInfo);
         log.info("Repository Info: {}", repositoryInfo);
 
         // Then
@@ -82,7 +82,7 @@ class GithubApiClientTest {
      * @param requestInfo 요청 정보
      * @param exception   발생할 예외 클래스
      * @param message     예외 메시지
-     * @see GithubApiClientTest#inValidRequestResourceProvider()
+     * @see GithubRepoMetaClientTest#inValidRequestResourceProvider()
      */
     @ParameterizedTest
     @MethodSource("inValidRequestResourceProvider")
@@ -96,7 +96,7 @@ class GithubApiClientTest {
         log.debug("Exception: {}", exception);
         log.debug("Expected Message: {}", message);
 
-        assertThatThrownBy(() -> githubApiClient.request(requestInfo))
+        assertThatThrownBy(() -> githubRepoMetaClient.request(requestInfo))
             .isInstanceOf(exception)
             .hasMessageContaining(message);
     }

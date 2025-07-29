@@ -8,15 +8,15 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-import java.time.LocalDateTime;
-
 @Getter
+@Builder
 @Embeddable
 @NoArgsConstructor(access = AccessLevel.PROTECTED)
-@AllArgsConstructor(access =  AccessLevel.PROTECTED)
-@Builder
-public class GithubToken {
-    @Column(name = "token", nullable = false, length = 512)
-    private String token;
-    private LocalDateTime expiresAt;
+@AllArgsConstructor(access = AccessLevel.PROTECTED)
+public class GithubProjectMeta {
+    @Column(name = "project_name", nullable = false, length = 64)
+    private String projectName;
+
+    @Column(name = "project_repo_owner", nullable = false, length = 64)
+    private String projectRepoOwner;
 }
