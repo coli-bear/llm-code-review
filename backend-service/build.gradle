@@ -3,7 +3,12 @@ plugins {
 	id 'org.springframework.boot' version '3.5.3'
 	id 'io.spring.dependency-management' version '1.1.7'
 }
-
+ext {
+	set('testContainersVersion', '1.21.3')
+	set('commonsCompressVersion', '1.26.0')
+	set('commonsLang3Version', '3.18.0')
+	set('snippetsDir', file("build/generated-snippets"))
+}
 group = 'com.llmreview'
 version = '0.0.1-SNAPSHOT'
 
@@ -24,22 +29,53 @@ repositories {
 }
 
 dependencies {
-	implementation 'org.springframework.boot:spring-boot-starter-data-jpa'
+	// Development Tools
+	developmentOnly 'org.springframework.boot:spring-boot-devtools'
+
+	// Reactive Web
 	implementation 'org.springframework.boot:spring-boot-starter-validation'
 	implementation 'org.springframework.boot:spring-boot-starter-webflux'
+	implementation('org.springframework.boot:spring-boot-starter-hateoas') {
+		exclude group: 'org.springframework.boot', module: 'spring-boot-starter-web'
+	}
+	// health check
+	implementation 'org.springframework.boot:spring-boot-starter-actuator'
+
+	// Authentication and Authorization
+	implementation 'org.springframework.boot:spring-boot-starter-security'
+
+	// Database
+	implementation 'org.springframework.boot:spring-boot-starter-data-mongodb-reactive'
+	implementation 'org.mongodb:mongodb-driver-sync' // MongoDB driver for reactive applications
+
+	// Environment Variables
 	implementation 'io.github.cdimascio:java-dotenv:5.2.2'
+
+	// lombok
 	compileOnly 'org.projectlombok:lombok'
-	developmentOnly 'org.springframework.boot:spring-boot-devtools'
-	runtimeOnly 'org.mariadb.jdbc:mariadb-java-client'
 	annotationProcessor 'org.projectlombok:lombok'
 
+
+	// CVE 조치
+	implementation "org.apache.commons:commons-compress:${commonsCompressVersion}"
+	implementation "org.apache.commons:commons-lang3:${commonsLang3Version}"
+
+	// Testing - test containers
+	testImplementation "org.testcontainers:junit-jupiter:${testContainersVersion}"
+	testImplementation "org.testcontainers:mongodb:${testContainersVersion}"
+
+	// Testing - Spring Boot Testing
 	testImplementation 'org.springframework.boot:spring-boot-starter-test'
 	testImplementation 'org.assertj:assertj-core:3.26.3'
-	testImplementation 'io.projectreactor:reactor-test'
+	testImplementation 'io.projectreactor:reactor-test' // reactive Streams testing support
 	testRuntimeOnly 'org.junit.platform:junit-platform-launcher'
-	testRuntimeOnly 'com.h2database:h2'
+
+	// Testing - Lombok
 	testCompileOnly 'org.projectlombok:lombok'
 	testAnnotationProcessor 'org.projectlombok:lombok'
+
+	// Testing - API Documentation(w. RestDocs)
+
 }
 
 tasks.named('test') {

@@ -1,11 +1,11 @@
 services:
   application-db:
-    image: mariadb:latest
+    image: mongo:latest
     container_name: application-db
     environment:
-      MYSQL_ROOT_PASSWORD: root_password
-      MYSQL_DATABASE: application_db
-      MYSQL_USER: application_user
-      MYSQL_PASSWORD: application_password
+      - MONGO_INITDB_ROOT_USERNAME=application_user
+      - MONGO_INITDB_ROOT_PASSWORD=application_password
+      - MONGO_INITDB_DATABASE=application_db
+      - MONGO_INITDB_AUTHENTICATION_DATABASE=admin
     ports:
-      - "3307:3306"
+      - "27017:27017"

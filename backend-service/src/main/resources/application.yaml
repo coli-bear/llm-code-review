@@ -1,21 +1,30 @@
 spring:
   application:
     name: backend-service
+  data:
+    mongodb:
+      uri: ${MONGODB_URI:mongodb://localhost:27017/application_db}
+      username: ${MONGODB_USER:application_user}
+      password: ${MONGODB_PASSWORD:application_password}
+      authentication-database: ${MONGODB_AUTH_DB:admin}
+      repositories:
+        type: reactive
 
-  datasource:
-    url: jdbc:mariadb://localhost:3307/application_db
-    username: application_user
-    password: application_password
-    driver-class-name: org.mariadb.jdbc.Driver
-  jpa:
-    show-sql: true
-    hibernate:
-      ddl-auto: update
-    properties:
-      hibernate:
-        format_sql: true
+  webflux:
+    hiddenmethod:
+      filter:
+        enabled: true
+
+  devtools:
+    restart:
+      enabled: true
+
+logging:
+  level:
+    web: error
+    com.llmreview.api: error
 
 ---
 spring:
   profiles:
-    active: test
+    active: dev
